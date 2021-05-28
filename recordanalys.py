@@ -1,3 +1,4 @@
+import os
 import pyaudio
 import wave
 import librosa, librosa.display
@@ -9,6 +10,22 @@ print("...WELCOME TO PYTHON DSP...")
 rt = int(input("Enter recording time:"))
 name = input("The name of record:")
 print("recording time is: " + str(rt))
+
+#create dir for analys figures
+dir_data = name + '_data'
+dir_sound = 'records'
+try:
+    os.mkdir(dir_data)
+    os.mkdir(dir_sound)
+    print("Directory " , dir_data ,  " Created!")
+    print("Directory"  , dir_sound , "Created!") 
+except FileExistsError:
+    print("Directory " , dir_data ,  " already exists!")
+    print("Directory"  , dir_sound , "already exist!")
+
+#route dir
+script_dir = os.path.dirname(__file__)
+results_dir = os.path.join(script_dir, dir_data + '/')
 
 
 chunk = 1024  # Record in chunks of 1024 samples
@@ -51,6 +68,8 @@ wf.setframerate(fs)
 wf.writeframes(b''.join(frames))
 wf.close()
 
+
+
 FIG_SIZE = (3,4)
 
 sound = name + ".wav"
@@ -63,9 +82,10 @@ plt.figure(figsize=FIG_SIZE)
 librosa.display.waveplot(sound, sr = sr, alpha=0.4)
 plt.xlabel("time (s)")
 plt.ylabel("amplitude")
-plt.title("Waveform", fontweight='bold')
-
-
+plt.title(name + "  Waveform", fontweight='bold')
+#save waveform to _data dir
+sample_file_name = "waveform"
+plt.savefig(results_dir + sample_file_name)
 
 #spectogram
 n_fft = 2048
@@ -83,7 +103,9 @@ librosa.display.specshow(log_spectrogram, sr=sr, hop_length=hop_length)
 plt.xlabel("Time")
 plt.ylabel("Frequency")
 plt.colorbar(format="%+2.0f dB")
-plt.title("Spectrogram (dB)", fontweight='bold')
+plt.title(name + "  Spectrogram (dB)", fontweight='bold')
+sample_file_name = "spectogram"
+plt.savefig(results_dir + sample_file_name)
 
 
 #spectrum
@@ -95,10 +117,13 @@ plt.plot(freq[:4000], fft_spectrum_abs[:4000])
 plt.plot(freq, fft_spectrum_abs)
 plt.xlabel("frequency, Hz")
 plt.ylabel("Amplitude, units")
-plt.title("Frequency Domain", fontweight='bold')
+plt.title(name + "  Frequency Domain", fontweight='bold')
 plt.xscale("log")
 plt.grid()
+sample_file_name = "spectrum"
+plt.savefig(results_dir + sample_file_name)
 
 
 # show plots
 plt.show()
+
