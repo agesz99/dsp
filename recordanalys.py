@@ -5,6 +5,7 @@ import librosa, librosa.display
 from librosa.core import spectrum
 import matplotlib.pyplot as plt
 import numpy as np
+import shutil
 
 print("...WELCOME TO PYTHON DSP...")
 rt = int(input("Enter recording time:"))
@@ -127,3 +128,13 @@ plt.savefig(results_dir + sample_file_name)
 # show plots
 plt.show()
 
+#plot storage
+choice1 = input('Do you want saving data?(y/n)')
+if choice1 == 'n':
+    del_path = results_dir
+    shutil.rmtree(del_path, ignore_errors=True)
+    print('Data deleted.')
+elif choice1 == 'y':
+    print("Data saved!")
+else:
+    print('This is not a choice.')
